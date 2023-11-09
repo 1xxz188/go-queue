@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	sq "github.com/yireyun/go-queue"
+	sq "github.com/1xxz188/go-queue"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 func testQueueHigh(grp, cnt int) int {
 	var wg sync.WaitGroup
 	wg.Add(grp)
-	q := sq.NewQueue(1024 * 1024)
+	q := sq.NewQueue[*int](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			ok := false

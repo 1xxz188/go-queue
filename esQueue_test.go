@@ -10,8 +10,12 @@ import (
 	"time"
 )
 
+var (
+	value int = 1
+)
+
 func TestQueue(t *testing.T) {
-	q := NewQueue(8)
+	q := NewQueue[*int](8)
 	ok, quantity := q.Put(&value)
 	if !ok {
 		t.Error("TestStack Get.Fail")
@@ -25,7 +29,7 @@ func TestQueue(t *testing.T) {
 		t.Error("TestStack Get.Fail")
 		return
 	} else {
-		t.Logf("TestStack Get value:%d[%v], quantity:%v\n", val, *(val.(*int)), quantity)
+		t.Logf("TestStack Get value:%d[%v], quantity:%v\n", val, value, quantity)
 	}
 	if q := q.Quantity(); q != 0 {
 		t.Errorf("Quantity Error: [%v] <>[%v]", q, 0)
@@ -143,7 +147,7 @@ func testQueuePutGet(t *testing.T, grp, cnt int) (
 	var wg sync.WaitGroup
 	var id int32
 	wg.Add(grp)
-	q := NewQueue(1024 * 1024)
+	q := NewQueue[*string](1024 * 1024)
 	start := time.Now()
 	for i := 0; i < grp; i++ {
 		go func(g int) {
@@ -193,7 +197,7 @@ func testQueueGeneral(t *testing.T, grp, cnt int) int {
 	var miss int32
 
 	wg.Add(grp)
-	q := NewQueue(1024 * 1024)
+	q := NewQueue[*string](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			defer wg.Done()
@@ -273,15 +277,11 @@ func (q *QtSum) GetCnt() (num int32) {
 	return
 }
 
-var (
-	value int = 1
-)
-
 func testQueuePutGoGet(t *testing.T, grp, cnt int) int {
 	var wg sync.WaitGroup
 	//var Qt = newQtSum(grp)
 	wg.Add(grp)
-	q := NewQueue(1024 * 1024)
+	q := NewQueue[*int](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			ok := false
@@ -339,7 +339,7 @@ func testQueuePutDoGet(t *testing.T, grp, cnt int) int {
 	var wg sync.WaitGroup
 	//var Qt = newQtSum(grp)
 	wg.Add(grp)
-	q := NewQueue(1024 * 1024)
+	q := NewQueue[*int](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			ok := false
@@ -390,7 +390,7 @@ func testQueuePutGetOrder(t *testing.T, grp, cnt int) (
 	var wg sync.WaitGroup
 	var idPut, idGet int32
 	wg.Add(grp)
-	q := NewQueue(1024 * 1024)
+	q := NewQueue[int32](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			defer wg.Done()
@@ -417,7 +417,7 @@ func testQueuePutGetOrder(t *testing.T, grp, cnt int) (
 				} else {
 					j++
 					idGet++
-					if idGet != val.(int32) {
+					if idGet != val {
 						t.Logf("Get.Err %d <> %d\n", idGet, val)
 					}
 				}

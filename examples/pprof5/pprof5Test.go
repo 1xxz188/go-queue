@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	sq "github.com/yireyun/go-queue"
+	sq "github.com/1xxz188/go-queue"
 )
 
 type QtObj struct {
@@ -57,7 +57,7 @@ func (q *QtSum) GetCnt() (num int32) {
 var (
 	valCnt = uint32(16)
 	values = make([]int, valCnt)
-	valPut = make([]interface{}, valCnt)
+	valPut = make([]int, valCnt)
 )
 
 func testQueueHigh(grp, cnt int, sched bool,
@@ -65,7 +65,7 @@ func testQueueHigh(grp, cnt int, sched bool,
 	var wg sync.WaitGroup
 	var Qt = newQtSum(grp)
 	wg.Add(grp)
-	q := sq.NewQueue(1024 * 1024)
+	q := sq.NewQueue[int](1024 * 1024)
 	for i := 0; i < grp; i++ {
 		go func(g int) {
 			for j := 0; j < cnt; j++ {
@@ -94,7 +94,7 @@ func testQueueHigh(grp, cnt int, sched bool,
 
 	wg.Add(1)
 	go func(g int) {
-		var values = make([]interface{}, valCnt)
+		var values = make([]int, valCnt)
 		for j := 0; j < cnt*grp; j++ {
 			var miss int32 = 0
 			getCnt := uint32(0)
@@ -204,7 +204,7 @@ func Sleep(d int) {
 	}
 }
 
-//12M晶振 1毫秒延迟
+// 12M晶振 1毫秒延迟
 func Delay(z int) {
 	var n = 0
 	for x := z * 2; x > 0; x-- {
@@ -222,9 +222,9 @@ func SetBatch(cnt uint32) {
 	fmt.Printf("----块尺寸-%v----\n", cnt)
 	valCnt = cnt
 	values = make([]int, valCnt)
-	valPut = make([]interface{}, valCnt)
+	valPut = make([]int, valCnt)
 	for i := range values {
 		values[i] = i
-		valPut[i] = &values[i]
+		valPut[i] = values[i]
 	}
 }
